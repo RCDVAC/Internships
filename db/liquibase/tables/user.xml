@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <createTable tableName="USERS">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="USERNAME" type="varchar(128)"/>
+            <column name="CREDENTIAL_DATA" type="varchar(255)" />
+            <column name="SECRET_DATA" type="varchar(255)" />
+            <column name="FIRST_NAME" type="VARCHAR(128)" />
+            <column name="MIDDLE_NAME" type="varchar(128)" />
+            <column name="LAST_NAME" type="varchar(128)" />
+            <column name="EMAIL" type="varchar(128)" />
+            <column name="DATE_CREATED" type="timestamp" />
+            <column name="PHONE_NUMBER" type="varchar(15)" />
+            <column name="DESCRIPTION" type="varchar(1024)" />
+            <column name="IS_ACTIVE" type="bool" />
+            <column name="EDUCATION" type="varchar(128)" />
+            <column name="ATTRIBUTES" type="json" />
+            <column name="EMAIL_VERIFIED" type="bool" />
+            <column name="SEARCHES" type="json" />
+            <!-- TODO: <column name="CITY" type="varchar(2)" /> -->
+            <!-- TODO: Languages -->
+            <!-- TODO: Saved job offers -->
+            <!-- TODO: Applied for job offers -->
+            <!-- TODO: Stajove -->
+            <!-- TODO: Picture  -->
+            <!-- TODO: Certificates  -->
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,23 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    compileOnly "org.keycloak:keycloak-core:${keycloakVersion}"
+    compileOnly "org.keycloak:keycloak-server-spi:${keycloakVersion}"
+    compileOnly "org.keycloak:keycloak-model-jpa:${keycloakVersion}"
+
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.25.0'
+
+    implementation(project(":model"))
+
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+}
+
+jar {
+    archiveBaseName = 'jobs-providers'
+    destinationDirectory.set(file('builds'))
+    archiveVersion = '0.0.1'
+}
+

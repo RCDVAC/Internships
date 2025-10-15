@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <createTable tableName="JOB_OFFER">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar(2048)"/>
+            <column name="ORGANIZATION_ID" type="uuid" />
+            <column name="IS_ACTIVE" type="bool" />
+            <column name="MINIMUM_SALARY" type="integer" />
+            <column name="MAXIMUM_SALARY" type="integer" />
+            <column name="WORKPLACE_TYPE" type="varchar(128)" />
+            <column name="JOB_TYPE" type="varchar(128)" />
+            <column name="WORK_HOURS" type="varchar(2)" />
+            <column name="VISITED" type="integer" />
+            <column name="DATE_CREATED" type="timestamp" />
+            <column name="DATE_MODIFIED" type="timestamp" />
+            <!-- TODO: Candidates -->
+            <!-- TODO: Tags -->
+            <!-- TODO: requirements -->
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <addForeignKeyConstraint
+                baseColumnNames="ORGANIZATION_ID"
+                baseTableName="JOB_OFFER"
+                referencedColumnNames="ID"
+                referencedTableName="ORGANIZATION"
+                constraintName="JOB_OFFER_ORGANIZATION"/>
+    </changeSet>
+
+</databaseChangeLog>

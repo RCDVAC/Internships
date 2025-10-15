@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <createTable tableName="ORGANIZATION">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="NAME" type="varchar(256)"/>
+            <column name="EIK" type="varchar(36)" />
+            <column name="ADDRESS" type="VARCHAR(256)" />
+            <column name="DESCRIPTION" type="varchar(2048)" />
+            <column name="SECTOR" type="varchar(256)" />
+            <column name="YEAR_CREATED" type="varchar(5)" />
+            <column name="DATE_JOINED" type="timestamp" />
+            <column name="IS_ACTIVE" type="bool" />
+            <!-- TODO: Pictures  -->
+            <!-- TODO: Subscription  -->
+            <!-- TODO: Admin users for this organization  -->
+            <!-- TODO: billing information  -->
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

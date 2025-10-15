@@ -1,0 +1,31 @@
+plugins {
+    id 'io.quarkus' version "${quarkusPlatformVersion}" apply false
+}
+
+allprojects {
+    group 'bg.ivo'
+    version '0.0.1'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << '-parameters'
+    }
+
+    tasks.withType(Test).configureEach {
+        systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+    }
+}

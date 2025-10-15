@@ -1,0 +1,67 @@
+= Getting Started
+
+This guide will walk you through setting up the entire development environment from scratch.
+
+== 1. Prerequisites
+
+* Java 21
+* Gradle (Wrapper included in project)
+* Keycloak 26
+* Postgres 17 database (not required, tested that it works fone)
+* Liquibase 4.32.0 (not required, tested that it works fine)
+
+== 2. Initial Setup
+
+. **Clone the repository:**
++
+[source,bash]
+----
+git clone https://github.com/axelbladers/Webisite_Jobs.git
+----
++
+. **Start the infrastructure**
+
+...... **PostgreSQL**
++
+
+Make sure the Postgres database is running and accessible. There is a liquibase script that initializes the database located at `/db`. The config file `liquibase.properties` contains properties which liquibase uses to connect to the database and make changes. Make sure you edit the file to contain the connection details for your database. Execute the script using this command:
++
+[source,bash]
+----
+liquibase update
+----
+
+...... **Keycloak **
++
+
+
+....... **Datasource**
++
+
+The config for the external datasource must be placed in a quarkus.properties file inside the folder `{keycloak-installation-dir}/conf`. An example config can be found in `/rest-api/conf`
+
+....... **Providers**
++
+
+You have to deploy the custom providers used for authentication. First build the providers using
++
+[source,bash]
+----
+gradlew :keycloak:jar
+----
++
+The jar will be located at `rest-api/keycloak/builds`. Copy the jar to `{keycloak-installation-dir}/providers` and run `kc.bat build` for production environments (It will auto build if you start keycloak with `kc.bat start-dev`)
+
+....... **Realm**
++
+
+Navigate to the keycloak admin console, go to `Realms` and click `Add Realm` then import a realm configuration file from `rest-api/keycloak/realm-exports`. This creates a realm with clients and providers setup already.
+
+== 3. Start the Rest-API
+
+To start the rest-api simply run:
+
+[source,bash]
+----
+gradlew quarkusDev
+----
