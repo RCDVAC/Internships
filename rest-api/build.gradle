@@ -3,7 +3,7 @@ plugins {
 }
 
 allprojects {
-    group 'bg.ivo'
+    group 'bg.softlytic'
     version '0.0.1'
 
     repositories {
