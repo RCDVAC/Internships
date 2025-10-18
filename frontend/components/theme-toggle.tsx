@@ -1,64 +1,31 @@
 "use client"
 
-import { Moon, Sun, Laptop } from "lucide-react"
-import { useEffect, useState } from "react"
-
-type Theme = "light" | "dark" | "soft-dark"
+import { useTheme } from "@/components/theme-provider"
+import { Button } from "@/components/ui/button"
+import { Sun, Moon, Laptop, Monitor } from "lucide-react"
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light")
+  const { theme, setTheme } = useTheme()
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme
-    if (savedTheme) {
-      setTheme(savedTheme)
-      applyTheme(savedTheme)
+  const cycleTheme = () => {
+    if (theme === "light") {
+      setTheme("dark")
+    } else if (theme === "dark") {
+      setTheme("soft-dark")
+    } else if (theme === "soft-dark") {
+      setTheme("system")
+    } else {
+      setTheme("light")
     }
-  }, [])
-
-  const applyTheme = (newTheme: Theme) => {
-    const root = document.documentElement
-    root.classList.remove("light", "dark", "soft-dark")
-    root.classList.add(newTheme)
-  }
-
-  const handleThemeChange = (newTheme: Theme) => {
-    setTheme(newTheme)
-    applyTheme(newTheme)
-    localStorage.setItem("theme", newTheme)
   }
 
   return (
-    <div className="flex items-center gap-1 rounded-full bg-muted p-1">
-      <button
-        onClick={() => handleThemeChange("light")}
-        className={`rounded-full p-2 transition-all ${
-          theme === "light" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-        }`}
-        aria-label="Light mode"
-      >
-        <Sun className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => handleThemeChange("dark")}
-        className={`rounded-full p-2 transition-all ${
-          theme === "dark" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-        }`}
-        aria-label="Dark mode"
-      >
-        <Moon className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => handleThemeChange("soft-dark")}
-        className={`rounded-full p-2 transition-all ${
-          theme === "soft-dark"
-            ? "bg-background text-foreground shadow-sm"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-        aria-label="Soft dark mode"
-      >
-        <Laptop className="h-4 w-4" />
-      </button>
-    </div>
+    <Button variant="ghost" size="icon" onClick={cycleTheme}>
+      {theme === "light" && <Sun className="h-5 w-5" />}
+      {theme === "dark" && <Moon className="h-5 w-5" />}
+      {theme === "soft-dark" && <Laptop className="h-5 w-5" />}
+      {theme === "system" && <Monitor className="h-5 w-5" />}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   )
 }

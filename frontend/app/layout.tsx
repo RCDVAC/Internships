@@ -1,32 +1,36 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
+import { Inter } from "next/font/google"
 import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
+import { ChatWidget } from "@/components/chat-widget"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "InternHub - Find Your Dream Internship",
-  description: "Discover internships and entry-level opportunities tailored for students and recent graduates",
-  generator: "v0.app",
+  title: "Softlytic - Find Your Next Internship",
+  description: "Discover internships and early career opportunities",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="en" className="light">
-      <body className={`font-sans antialiased`}>
-        <Navigation />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
-        <Analytics />
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+          <ChatWidget />
+        </ThemeProvider>
       </body>
     </html>
   )
