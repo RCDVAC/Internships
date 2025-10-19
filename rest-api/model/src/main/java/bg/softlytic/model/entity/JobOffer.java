@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "JOB_OFFER", schema = "jobs_project")
+@Table(name = "JOB_OFFER", schema = "JOBS_PROJECT")
 @Getter
 @Setter
 @ToString
@@ -49,9 +49,10 @@ public class JobOffer {
 
     @ManyToOne()
     @JoinColumn(name = "ORGANIZATION_ID", referencedColumnName = "ID")
+    @ToString.Exclude
     public Organization organization;
 
-    @ManyToMany()
+    @OneToMany()
     @JoinColumn(referencedColumnName = "ID", table = "FILTER_OPTION")
     @ToString.Exclude
     public Set<FilterOption> filterOptions;

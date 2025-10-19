@@ -16,6 +16,8 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="NAME" type="varchar(128)"/>
+            <column name="TYPE" type="varchar(128)"/>
+            <column name="PRESENTABLE_NAME" type="varchar(256)"/>
             <column name="PARENT_FILTER_OPTION_ID" type="uuid" />
             <column name="IS_ACTIVE" type="bool" />
         </createTable>

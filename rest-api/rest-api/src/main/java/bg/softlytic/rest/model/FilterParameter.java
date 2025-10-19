@@ -1,4 +1,4 @@
-package bg.softlytic.rest.service.filter;
+package bg.softlytic.rest.model;
 
 import lombok.Getter;
 import lombok.Setter;

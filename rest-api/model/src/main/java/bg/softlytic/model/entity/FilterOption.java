@@ -15,6 +15,13 @@ public class FilterOption {
     @Column(name = "NAME")
     public String name;
 
+    @Column(name = "TYPE")
+    public String type;
+
+    @Column(name = "PRESENTABLE_NAME")
+    public String presentableName;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_FILTER_OPTION_ID")
     public FilterOption parentFilter;

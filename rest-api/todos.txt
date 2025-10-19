@@ -1,0 +1,32 @@
+CURRENTLY DOING:
+
+TODO: Filtering
+
+ - Endpoint to get all filters
+ - Filters will contain:
+    - Name (used in backend)
+    - Presentable Name (Used in frontend)
+    - Type
+
+
+
+
+PRIORITY:
+
+
+
+BACKLOG:
+
+TODO: Start documentation
+TODO: Vault integration
+TODO: Sophisticated Error handling
+TODO: Unit tests
+TODO: Logging
+TODO: Entity & DTO validation
+TODO: Docker
+TODO: checkout https://www.elastic.co/elasticsearch/monitoring for monitoring
+
+
+NEXT STAGE:
+
+TODO: AI

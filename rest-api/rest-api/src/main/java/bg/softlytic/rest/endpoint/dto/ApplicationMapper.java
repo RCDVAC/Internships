@@ -25,6 +25,7 @@ public abstract class ApplicationMapper {
     @Mapping(target = "organizationId", expression = "java(jobOffer.organization.id.toString())")
     public abstract JobOfferDTO toDto(JobOffer jobOffer);
 
+    @Mapping(target = "id", expression = "java(organization.id.toString())")
     public abstract OrganizationDTO toDto(Organization organization);
 
     // TO ENTITY MAPPINGS

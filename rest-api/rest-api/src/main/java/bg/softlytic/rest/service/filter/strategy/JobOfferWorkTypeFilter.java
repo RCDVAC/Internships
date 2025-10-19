@@ -11,7 +11,7 @@ import jakarta.persistence.criteria.Root;
 @ApplicationScoped
 public class JobOfferWorkTypeFilter extends JobOfferFilterStrategy<WorkType> {
     @Override
-    public String getFilterName() {
+    public String getName() {
         return "JOB_OFFER__WORK_TYPE";
     }
 

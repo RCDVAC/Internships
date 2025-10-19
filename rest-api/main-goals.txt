@@ -1,0 +1,3 @@
+optimised(using reactive whenever possible)
+scalable(docker & kubernetes)
+secure(keycloak)!

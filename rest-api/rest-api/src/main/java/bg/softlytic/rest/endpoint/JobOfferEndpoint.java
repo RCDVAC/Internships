@@ -25,16 +25,23 @@ public class JobOfferEndpoint {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{jobOfferId}")
-    public Uni<JobOfferDTO> getJobOffer(@PathParam("jobOfferId") String jobOfferId) {
-        return jobOfferService.getJobOfferById(UUID.fromString(jobOfferId))
+    public Uni<JobOfferDTO> findById(@PathParam("jobOfferId") String jobOfferId) {
+        return jobOfferService.findById(UUID.fromString(jobOfferId))
                 .map((jobOffer) -> applicationMapper.toDto(jobOffer));
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<List<JobOfferDTO>> listAll() {
+        return jobOfferService.listAll().map((jobOffers) -> jobOffers.stream()
+                .map((jobOffer -> applicationMapper.toDto(jobOffer)))
+                .toList());
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/")
-    public Uni<UUID> createJobOffer(JobOfferDTO jobOfferDTO) {
-        return jobOfferService.createJobOffer(jobOfferDTO).map(JobOffer::getId);
+    public Uni<UUID> create(JobOfferDTO jobOfferDTO) {
+        return jobOfferService.create(jobOfferDTO).map(JobOffer::getId);
     }
 
     @GET

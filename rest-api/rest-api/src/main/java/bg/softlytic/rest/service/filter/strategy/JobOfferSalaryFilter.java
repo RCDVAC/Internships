@@ -10,7 +10,7 @@ import jakarta.persistence.criteria.Root;
 @ApplicationScoped
 public class JobOfferSalaryFilter extends JobOfferFilterStrategy<Integer> {
     @Override
-    public String getFilterName() {
+    public String getName() {
         return "JOB_OFFER__SALARY";
     }
 

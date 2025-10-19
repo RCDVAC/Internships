@@ -1,7 +1,9 @@
-package bg.softlytic.rest.service.filter.strategy;
+package bg.softlytic.rest.service.filter;
 
-import bg.softlytic.rest.config.filter.FilterRegistry;
-import bg.softlytic.rest.service.filter.FilterParameter;
+import bg.softlytic.rest.config.filter.FilterStrategyRegistry;
+import bg.softlytic.rest.endpoint.dto.FilterOptionDto;
+import bg.softlytic.rest.model.FilterParameter;
+import bg.softlytic.rest.service.filter.strategy.FilterStrategy;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,7 +22,11 @@ import java.util.List;
 public class FilterService {
 
     @Inject
-    FilterRegistry filterRegistry;
+    FilterStrategyRegistry filterStrategyRegistry;
+
+    public Uni<List<FilterOptionDto>> findAll(){
+
+    }
 
     public <E> Uni<CriteriaQuery<E>> filter(Class<E> entity, List<FilterParameter> filterParams) {
         return Panache.withSession(() -> {
@@ -31,7 +37,7 @@ public class FilterService {
 
                 List<Predicate> predicates = new ArrayList<>();
                 for (FilterParameter filterParameter : filterParams) {
-                    FilterStrategy<?, ?> genericStrategy = filterRegistry.getStrategy(filterParameter.getName());
+                    FilterStrategy<?, ?> genericStrategy = filterStrategyRegistry.getByName(filterParameter.getName());
 
                     if (genericStrategy != null) {
                         try {

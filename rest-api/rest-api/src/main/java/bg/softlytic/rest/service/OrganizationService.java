@@ -10,6 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -22,7 +23,7 @@ public class OrganizationService {
     ApplicationMapper applicationMapper;
 
     @WithTransaction
-    public Uni<Organization> getById(UUID uuid) {
+    public Uni<Organization> findById(UUID uuid) {
         return organizationRepository.findById(uuid);
 //                .orElseThrow(() -> {
 //            log.error("Organization with id: {}, not found", uuid);
@@ -31,7 +32,12 @@ public class OrganizationService {
     }
 
     @WithTransaction
-    public Uni<Organization> createOrganization(OrganizationDTO organizationDTO) {
+    public Uni<List<Organization>> findAll(){
+        return organizationRepository.listAll();
+    }
+
+    @WithTransaction
+    public Uni<Organization> create(OrganizationDTO organizationDTO) {
         Uni<Organization> organizationUni = applicationMapper.toBasicEntity(organizationDTO);
         return organizationUni.onItem().transformToUni((organization -> organizationRepository.persist(organization)));
     }
