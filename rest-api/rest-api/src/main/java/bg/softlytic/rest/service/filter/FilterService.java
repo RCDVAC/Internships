@@ -24,8 +24,8 @@ public class FilterService {
     @Inject
     FilterStrategyRegistry filterStrategyRegistry;
 
-    public Uni<List<FilterOptionDto>> findAll(){
-
+    public Uni<List<FilterStrategy<?, ?>>> findAll(){
+        return Uni.createFrom().item(filterStrategyRegistry.listAll());
     }
 
     public <E> Uni<CriteriaQuery<E>> filter(Class<E> entity, List<FilterParameter> filterParams) {

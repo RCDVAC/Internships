@@ -1,6 +1,6 @@
 package bg.softlytic.exception;
 
-public class JobOfferNotFoundException extends RuntimeException {
+public class JobOfferNotFoundException extends ApplicationException {
 
     public JobOfferNotFoundException() {
         super();

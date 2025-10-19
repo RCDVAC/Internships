@@ -1,7 +1,6 @@
 package bg.softlytic.exception;
 
-public class UserNotFoundException extends RuntimeException {
-
+public class UserNotFoundException extends ApplicationException {
 
     public UserNotFoundException() {
         super();

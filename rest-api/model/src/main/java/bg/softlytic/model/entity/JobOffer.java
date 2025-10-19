@@ -52,8 +52,7 @@ public class JobOffer {
     @ToString.Exclude
     public Organization organization;
 
-    @OneToMany()
-    @JoinColumn(referencedColumnName = "ID", table = "FILTER_OPTION")
+    @ManyToMany()
     @ToString.Exclude
     public Set<FilterOption> filterOptions;
 

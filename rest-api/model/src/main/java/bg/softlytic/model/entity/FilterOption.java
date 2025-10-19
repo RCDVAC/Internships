@@ -1,7 +1,9 @@
 package bg.softlytic.model.entity;
 
 import jakarta.persistence.*;
+import lombok.ToString;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -21,10 +23,14 @@ public class FilterOption {
     @Column(name = "PRESENTABLE_NAME")
     public String presentableName;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PARENT_FILTER_OPTION_ID")
+    @ToString.Exclude
     public FilterOption parentFilter;
+
+    @ManyToMany()
+    @ToString.Exclude
+    public Set<JobOffer> jobOffers;
 
 
 }

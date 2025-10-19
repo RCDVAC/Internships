@@ -19,7 +19,7 @@ public class FilterEndpoint {
 
     @GET
     public Uni<List<FilterOptionDto>> findAll(){
-
+        return Uni.createFrom().item(null);
     }
 
 

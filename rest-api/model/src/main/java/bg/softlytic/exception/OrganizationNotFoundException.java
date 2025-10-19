@@ -1,6 +1,6 @@
 package bg.softlytic.exception;
 
-public class OrganizationNotFoundException extends RuntimeException {
+public class OrganizationNotFoundException extends ApplicationException {
 
     public OrganizationNotFoundException() {
         super();
