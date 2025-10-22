@@ -1,13 +1,9 @@
 CURRENTLY DOING:
 
-TODO: Filtering
-
- - Endpoint to get all filters
- - Filters will contain:
-    - Name (used in backend)
-    - Presentable Name (Used in frontend)
-    - Type
-
+TODO: Organization signup
+TODO: Organizations put up job offers
+TODO: Users sign up for the job offers
+TODO: Chat room
 
 
 
@@ -17,6 +13,9 @@ PRIORITY:
 
 BACKLOG:
 
+TODO: Filtering (A lot of progress has been made, needs to be finished)
+TODO: Security (Enforce roles and such)
+TODO: Payment
 TODO: Start documentation
 TODO: Vault integration
 TODO: Sophisticated Error handling
@@ -26,6 +25,8 @@ TODO: Entity & DTO validation
 TODO: Docker
 TODO: checkout https://www.elastic.co/elasticsearch/monitoring for monitoring
 
+
+TODO: Integrate AI
 
 NEXT STAGE:
 
