@@ -1,8 +1,6 @@
 import NextAuth from "next-auth";
 import { authOptions } from "./lib/auth";
 
-export const runtime = 'nodejs';
-
 export const config = {
   matcher: [
     "/dashboard/:path*",
@@ -10,4 +8,4 @@ export const config = {
   ],
 };
 
-export const middleware = NextAuth(authOptions).auth;
+export const proxy = NextAuth(authOptions).auth;
