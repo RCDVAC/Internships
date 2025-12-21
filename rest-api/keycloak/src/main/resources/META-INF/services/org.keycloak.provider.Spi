@@ -1,2 +1,2 @@
-bg.ivo.keycloak.spi.UserRepositorySpi
-bg.ivo.keycloak.spi.UserServiceSpi
+bg.softlytic.keycloak.spi.UserRepositorySpi
+bg.softlytic.keycloak.spi.UserServiceSpi

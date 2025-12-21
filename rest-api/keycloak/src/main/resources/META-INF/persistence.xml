@@ -5,9 +5,9 @@
         xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
         version="3.0">
     <persistence-unit name="user-store" transaction-type="JTA">
-        <class>bg.ivo.model.entity.User</class>
-        <class>bg.ivo.model.entity.JobOffer</class>
-        <class>bg.ivo.model.entity.Organization</class>
+        <class>bg.softlytic.model.entity.User</class>
+        <class>bg.softlytic.model.entity.JobOffer</class>
+        <class>bg.softlytic.model.entity.Organization</class>
         <properties>
             <property
                     name="hibernate.connection.datasource"
