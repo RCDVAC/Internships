@@ -52,10 +52,6 @@ public class JobOffer {
     @ToString.Exclude
     public Organization organization;
 
-    @ManyToMany()
-    @ToString.Exclude
-    public Set<FilterOption> filterOptions;
-
     public JobOffer() {
         this.id = UUID.randomUUID();
         this.isActive = true;

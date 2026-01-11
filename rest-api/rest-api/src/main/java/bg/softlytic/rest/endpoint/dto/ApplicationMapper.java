@@ -9,7 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -21,12 +25,28 @@ public abstract class ApplicationMapper {
 
     // TO DTO MAPPINGS
 
-    @Mapping(target = "id", expression = "java(jobOffer.id.toString())")
-    @Mapping(target = "organizationId", expression = "java(jobOffer.organization.id.toString())")
+    @Mapping(target = "id", expression = "java(jobOffer.getId().toString())")
+    @Mapping(target = "organizationId", expression = "java(jobOffer.getOrganization() != null ? jobOffer.getOrganization().getId().toString() : null)")
+    @Mapping(target = "dateCreated", source = "dateCreated", qualifiedByName = "timestampToLocalDateTime")
+    @Mapping(target = "dateModified", source = "dateModified", qualifiedByName = "timestampToLocalDateTime")
     public abstract JobOfferDTO toDto(JobOffer jobOffer);
 
-    @Mapping(target = "id", expression = "java(organization.id.toString())")
+    @Mapping(target = "id", expression = "java(organization.getId().toString())")
+    @Mapping(target = "dateJoined", source = "dateJoined", qualifiedByName = "timestampToLocalDate")
+    @Mapping(target = "jobsOfferIds", expression = "java(organization.getJobsOffers() != null ? organization.getJobsOffers().stream().map(j -> j.getId().toString()).collect(java.util.stream.Collectors.toSet()) : null)")
     public abstract OrganizationDTO toDto(Organization organization);
+
+    // TYPE CONVERSION METHODS
+
+    @Named("timestampToLocalDateTime")
+    protected LocalDateTime timestampToLocalDateTime(Timestamp timestamp) {
+        return timestamp != null ? timestamp.toLocalDateTime() : null;
+    }
+
+    @Named("timestampToLocalDate")
+    protected LocalDate timestampToLocalDate(Timestamp timestamp) {
+        return timestamp != null ? timestamp.toLocalDateTime().toLocalDate() : null;
+    }
 
     // TO ENTITY MAPPINGS
 
@@ -80,5 +100,25 @@ public abstract class ApplicationMapper {
     @Mapping(target = "isActive", ignore = true)
     @Mapping(target = "dateJoined", ignore = true)
     public abstract void fillBasicOrganizationFields(@MappingTarget Organization organization, OrganizationDTO organizationDTO);
+
+    // UPDATE ENTITY MAPPINGS
+
+    public Uni<JobOffer> updateEntity(JobOffer existingJobOffer, JobOfferDTO jobOfferDTO) {
+        fillBasicJobOfferFields(existingJobOffer, jobOfferDTO);
+        existingJobOffer.setDateModified(Timestamp.from(java.time.Instant.now()));
+
+        if (jobOfferDTO.getOrganizationId() != null) {
+            return findEntityById(jobOfferDTO.getOrganizationId())
+                    .onItem().transform(organization -> {
+                        existingJobOffer.setOrganization(organization);
+                        return existingJobOffer;
+                    });
+        }
+        return Uni.createFrom().item(existingJobOffer);
+    }
+
+    public void updateEntity(Organization existingOrganization, OrganizationDTO organizationDTO) {
+        fillBasicOrganizationFields(existingOrganization, organizationDTO);
+    }
 
 }

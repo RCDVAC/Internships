@@ -28,9 +28,5 @@ public class FilterOption {
     @ToString.Exclude
     public FilterOption parentFilter;
 
-    @ManyToMany()
-    @ToString.Exclude
-    public Set<JobOffer> jobOffers;
-
 
 }
