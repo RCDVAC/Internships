@@ -41,4 +41,84 @@
                 constraintName="JOB_OFFER_ORGANIZATION"/>
     </changeSet>
 
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Fix VISITED column type and add defaults</comment>
+
+        <!-- Change VISITED from integer to BIGINT to match Java Long -->
+        <modifyDataType
+            tableName="JOB_OFFER"
+            columnName="VISITED"
+            newDataType="BIGINT"/>
+
+        <!-- Add default value for VISITED -->
+        <addDefaultValue
+            tableName="JOB_OFFER"
+            columnName="VISITED"
+            defaultValueNumeric="0"/>
+
+        <!-- Add NOT NULL constraint to VISITED -->
+        <addNotNullConstraint
+            tableName="JOB_OFFER"
+            columnName="VISITED"
+            columnDataType="BIGINT"/>
+    </changeSet>
+
+    <changeSet id="4" author="Ivaylo Mitrev">
+        <comment>Add NOT NULL constraints and defaults for JOB_OFFER</comment>
+
+        <!-- Add default value for IS_ACTIVE -->
+        <addDefaultValue
+            tableName="JOB_OFFER"
+            columnName="IS_ACTIVE"
+            defaultValueBoolean="true"/>
+
+        <!-- Add NOT NULL constraint to IS_ACTIVE -->
+        <addNotNullConstraint
+            tableName="JOB_OFFER"
+            columnName="IS_ACTIVE"
+            columnDataType="bool"/>
+
+        <!-- Add NOT NULL constraint to ORGANIZATION_ID -->
+        <addNotNullConstraint
+            tableName="JOB_OFFER"
+            columnName="ORGANIZATION_ID"
+            columnDataType="uuid"/>
+
+        <!-- Add NOT NULL constraint to DATE_CREATED -->
+        <addNotNullConstraint
+            tableName="JOB_OFFER"
+            columnName="DATE_CREATED"
+            columnDataType="timestamp"/>
+    </changeSet>
+
+    <changeSet id="5" author="Ivaylo Mitrev">
+        <comment>Add indexes for JOB_OFFER table</comment>
+
+        <createIndex indexName="IDX_JOB_OFFER_ORGANIZATION_ID" tableName="JOB_OFFER">
+            <column name="ORGANIZATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_JOB_OFFER_IS_ACTIVE" tableName="JOB_OFFER">
+            <column name="IS_ACTIVE"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_JOB_OFFER_JOB_TYPE" tableName="JOB_OFFER">
+            <column name="JOB_TYPE"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_JOB_OFFER_WORKPLACE_TYPE" tableName="JOB_OFFER">
+            <column name="WORKPLACE_TYPE"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_JOB_OFFER_DATE_CREATED" tableName="JOB_OFFER">
+            <column name="DATE_CREATED"/>
+        </createIndex>
+
+        <!-- Composite index for common filter queries -->
+        <createIndex indexName="IDX_JOB_OFFER_ACTIVE_DATE" tableName="JOB_OFFER">
+            <column name="IS_ACTIVE"/>
+            <column name="DATE_CREATED"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

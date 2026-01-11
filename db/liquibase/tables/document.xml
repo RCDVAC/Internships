@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <comment>Create DOCUMENT table for user document management (CVs, certificates, portfolios)</comment>
+        <createTable tableName="DOCUMENT">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORIGINAL_FILE_NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_PATH" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_SIZE" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MIME_TYPE" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Document type: CV, CERTIFICATE, PORTFOLIO, OTHER -->
+            <column name="DOCUMENT_TYPE" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar(512)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DATE_UPLOADED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_MODIFIED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ACTIVE" type="bool" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <!-- For CV, track if it's the primary/default one -->
+            <column name="IS_PRIMARY" type="bool" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <comment>Add foreign key for DOCUMENT</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="DOCUMENT"
+            baseColumnNames="USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_DOCUMENT_USER"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add indexes for DOCUMENT table</comment>
+
+        <createIndex indexName="IDX_DOCUMENT_USER" tableName="DOCUMENT">
+            <column name="USER_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_DOCUMENT_TYPE" tableName="DOCUMENT">
+            <column name="DOCUMENT_TYPE"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_DOCUMENT_IS_ACTIVE" tableName="DOCUMENT">
+            <column name="IS_ACTIVE"/>
+        </createIndex>
+
+        <!-- Composite index for getting user's active documents by type -->
+        <createIndex indexName="IDX_DOCUMENT_USER_TYPE_ACTIVE" tableName="DOCUMENT">
+            <column name="USER_ID"/>
+            <column name="DOCUMENT_TYPE"/>
+            <column name="IS_ACTIVE"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

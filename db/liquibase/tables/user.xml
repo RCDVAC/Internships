@@ -40,4 +40,54 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <comment>Add unique constraints and defaults for USERS</comment>
+
+        <!-- Add unique constraint on USERNAME -->
+        <addUniqueConstraint
+            tableName="USERS"
+            columnNames="USERNAME"
+            constraintName="UK_USERS_USERNAME"/>
+
+        <!-- Add unique constraint on EMAIL -->
+        <addUniqueConstraint
+            tableName="USERS"
+            columnNames="EMAIL"
+            constraintName="UK_USERS_EMAIL"/>
+
+        <!-- Add default value for IS_ACTIVE -->
+        <addDefaultValue
+            tableName="USERS"
+            columnName="IS_ACTIVE"
+            defaultValueBoolean="true"/>
+
+        <!-- Add NOT NULL constraint to IS_ACTIVE -->
+        <addNotNullConstraint
+            tableName="USERS"
+            columnName="IS_ACTIVE"
+            columnDataType="bool"/>
+
+        <!-- Add default value for EMAIL_VERIFIED -->
+        <addDefaultValue
+            tableName="USERS"
+            columnName="EMAIL_VERIFIED"
+            defaultValueBoolean="false"/>
+    </changeSet>
+
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add indexes for USERS table</comment>
+
+        <createIndex indexName="IDX_USERS_EMAIL" tableName="USERS">
+            <column name="EMAIL"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_USERS_USERNAME" tableName="USERS">
+            <column name="USERNAME"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_USERS_IS_ACTIVE" tableName="USERS">
+            <column name="IS_ACTIVE"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <comment>Create JOB_APPLICATION table for tracking user applications to job offers</comment>
+        <createTable tableName="JOB_APPLICATION">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_OFFER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Status: APPLIED, SCREENING, INTERVIEW, OFFER, HIRED, REJECTED, WITHDRAWN -->
+            <column name="STATUS" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COVER_LETTER" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="NOTES" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DATE_APPLIED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_MODIFIED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ACTIVE" type="bool" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for JOB_APPLICATION</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="JOB_APPLICATION"
+            baseColumnNames="USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_JOB_APPLICATION_USER"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="JOB_APPLICATION"
+            baseColumnNames="JOB_OFFER_ID"
+            referencedTableName="JOB_OFFER"
+            referencedColumnNames="ID"
+            constraintName="FK_JOB_APPLICATION_JOB_OFFER"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add indexes and unique constraint for JOB_APPLICATION</comment>
+
+        <!-- Unique constraint: one user can only apply once per job -->
+        <addUniqueConstraint
+            tableName="JOB_APPLICATION"
+            columnNames="USER_ID,JOB_OFFER_ID"
+            constraintName="UK_JOB_APPLICATION_USER_JOB"/>
+
+        <createIndex indexName="IDX_JOB_APPLICATION_USER" tableName="JOB_APPLICATION">
+            <column name="USER_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_JOB_APPLICATION_JOB_OFFER" tableName="JOB_APPLICATION">
+            <column name="JOB_OFFER_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_JOB_APPLICATION_STATUS" tableName="JOB_APPLICATION">
+            <column name="STATUS"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_JOB_APPLICATION_DATE_APPLIED" tableName="JOB_APPLICATION">
+            <column name="DATE_APPLIED"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Application Status History -->
+    <changeSet id="4" author="Ivaylo Mitrev">
+        <comment>Create APPLICATION_STATUS_HISTORY table for tracking status changes with audit trail</comment>
+        <createTable tableName="APPLICATION_STATUS_HISTORY">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="APPLICATION_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PREVIOUS_STATUS" type="varchar(32)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="NEW_STATUS" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CHANGED_BY_USER_ID" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+            <column name="NOTES" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DATE_CHANGED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for APPLICATION_STATUS_HISTORY</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="APPLICATION_STATUS_HISTORY"
+            baseColumnNames="APPLICATION_ID"
+            referencedTableName="JOB_APPLICATION"
+            referencedColumnNames="ID"
+            constraintName="FK_APP_STATUS_HISTORY_APPLICATION"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="APPLICATION_STATUS_HISTORY"
+            baseColumnNames="CHANGED_BY_USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_APP_STATUS_HISTORY_USER"
+            onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="6" author="Ivaylo Mitrev">
+        <comment>Add indexes for APPLICATION_STATUS_HISTORY</comment>
+
+        <createIndex indexName="IDX_APP_STATUS_HISTORY_APPLICATION" tableName="APPLICATION_STATUS_HISTORY">
+            <column name="APPLICATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_APP_STATUS_HISTORY_DATE" tableName="APPLICATION_STATUS_HISTORY">
+            <column name="DATE_CHANGED"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Application Document Junction Table -->
+    <changeSet id="7" author="Ivaylo Mitrev">
+        <comment>Create APPLICATION_DOCUMENT junction table linking documents to applications</comment>
+        <createTable tableName="APPLICATION_DOCUMENT">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="APPLICATION_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_ATTACHED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="8" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for APPLICATION_DOCUMENT</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="APPLICATION_DOCUMENT"
+            baseColumnNames="APPLICATION_ID"
+            referencedTableName="JOB_APPLICATION"
+            referencedColumnNames="ID"
+            constraintName="FK_APP_DOC_APPLICATION"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="APPLICATION_DOCUMENT"
+            baseColumnNames="DOCUMENT_ID"
+            referencedTableName="DOCUMENT"
+            referencedColumnNames="ID"
+            constraintName="FK_APP_DOC_DOCUMENT"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="9" author="Ivaylo Mitrev">
+        <comment>Add indexes and unique constraint for APPLICATION_DOCUMENT</comment>
+
+        <addUniqueConstraint
+            tableName="APPLICATION_DOCUMENT"
+            columnNames="APPLICATION_ID,DOCUMENT_ID"
+            constraintName="UK_APP_DOC_APP_DOC"/>
+
+        <createIndex indexName="IDX_APP_DOC_APPLICATION" tableName="APPLICATION_DOCUMENT">
+            <column name="APPLICATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_APP_DOC_DOCUMENT" tableName="APPLICATION_DOCUMENT">
+            <column name="DOCUMENT_ID"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

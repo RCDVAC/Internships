@@ -1,6 +1,5 @@
 package bg.softlytic.model.entity;
 
-import bg.softlytic.model.enums.Sector;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,47 +8,38 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ORGANIZATION", schema = "JOBS_PROJECT")
+@Table(name = "SAVED_JOB_OFFER", schema = "JOBS_PROJECT")
 @Getter
 @Setter
 @ToString
-public class Organization {
+public class SavedJobOffer {
 
     @Id
     public UUID id;
-    @Column(name = "NAME")
-    public String name;
-    @Column(name = "EIK")
-    public String eik;
-    @Column(name = "ADDRESS")
-    public String address;
-    @Column(name = "DESCRIPTION")
-    public String description;
-    @Column(name = "SECTOR")
-    @Enumerated(EnumType.STRING)
-    public Sector sector;
-    @Column(name = "YEAR_CREATED")
-    public Short yearCreated;
-    @Column(name = "DATE_JOINED")
-    public Timestamp dateJoined;
-    @Column(name = "IS_ACTIVE")
-    public Boolean isActive;
 
-
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID", nullable = false)
     @ToString.Exclude
-    public Set<JobOffer> jobsOffers = new HashSet<>();
+    public User user;
 
-    public Organization() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "JOB_OFFER_ID", nullable = false)
+    @ToString.Exclude
+    public JobOffer jobOffer;
+
+    @Column(name = "DATE_SAVED", nullable = false)
+    public Timestamp dateSaved;
+
+    @Column(name = "NOTES")
+    public String notes;
+
+    public SavedJobOffer() {
         this.id = UUID.randomUUID();
-        this.isActive = true;
-        this.dateJoined = Timestamp.from(Instant.now());
+        this.dateSaved = Timestamp.from(Instant.now());
     }
 
     @Override
@@ -59,7 +49,7 @@ public class Organization {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Organization that = (Organization) o;
+        SavedJobOffer that = (SavedJobOffer) o;
         return this.id != null && Objects.equals(this.id, that.id);
     }
 

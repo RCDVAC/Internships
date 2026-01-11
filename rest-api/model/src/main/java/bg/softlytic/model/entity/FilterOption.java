@@ -28,5 +28,7 @@ public class FilterOption {
     @ToString.Exclude
     public FilterOption parentFilter;
 
+    @Column(name = "IS_ACTIVE")
+    public Boolean isActive;
 
 }

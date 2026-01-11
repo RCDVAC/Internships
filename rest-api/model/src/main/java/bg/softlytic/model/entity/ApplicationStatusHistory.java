@@ -1,6 +1,6 @@
 package bg.softlytic.model.entity;
 
-import bg.softlytic.model.enums.Sector;
+import bg.softlytic.model.enums.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,47 +9,46 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ORGANIZATION", schema = "JOBS_PROJECT")
+@Table(name = "APPLICATION_STATUS_HISTORY", schema = "JOBS_PROJECT")
 @Getter
 @Setter
 @ToString
-public class Organization {
+public class ApplicationStatusHistory {
 
     @Id
     public UUID id;
-    @Column(name = "NAME")
-    public String name;
-    @Column(name = "EIK")
-    public String eik;
-    @Column(name = "ADDRESS")
-    public String address;
-    @Column(name = "DESCRIPTION")
-    public String description;
-    @Column(name = "SECTOR")
-    @Enumerated(EnumType.STRING)
-    public Sector sector;
-    @Column(name = "YEAR_CREATED")
-    public Short yearCreated;
-    @Column(name = "DATE_JOINED")
-    public Timestamp dateJoined;
-    @Column(name = "IS_ACTIVE")
-    public Boolean isActive;
 
-
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APPLICATION_ID", nullable = false)
     @ToString.Exclude
-    public Set<JobOffer> jobsOffers = new HashSet<>();
+    public JobApplication application;
 
-    public Organization() {
+    @Column(name = "PREVIOUS_STATUS")
+    @Enumerated(EnumType.STRING)
+    public ApplicationStatus previousStatus;
+
+    @Column(name = "NEW_STATUS", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public ApplicationStatus newStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CHANGED_BY_USER_ID")
+    @ToString.Exclude
+    public User changedBy;
+
+    @Column(name = "NOTES", columnDefinition = "text")
+    public String notes;
+
+    @Column(name = "DATE_CHANGED", nullable = false)
+    public Timestamp dateChanged;
+
+    public ApplicationStatusHistory() {
         this.id = UUID.randomUUID();
-        this.isActive = true;
-        this.dateJoined = Timestamp.from(Instant.now());
+        this.dateChanged = Timestamp.from(Instant.now());
     }
 
     @Override
@@ -59,7 +58,7 @@ public class Organization {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Organization that = (Organization) o;
+        ApplicationStatusHistory that = (ApplicationStatusHistory) o;
         return this.id != null && Objects.equals(this.id, that.id);
     }
 

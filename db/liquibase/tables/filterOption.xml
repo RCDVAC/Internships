@@ -32,4 +32,48 @@
                 constraintName="PARENT_FILTER_FK"/>
     </changeSet>
 
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add NOT NULL constraints and defaults for FILTER_OPTION</comment>
+
+        <!-- Add NOT NULL constraint to NAME -->
+        <addNotNullConstraint
+            tableName="FILTER_OPTION"
+            columnName="NAME"
+            columnDataType="varchar(128)"/>
+
+        <!-- Add NOT NULL constraint to TYPE -->
+        <addNotNullConstraint
+            tableName="FILTER_OPTION"
+            columnName="TYPE"
+            columnDataType="varchar(128)"/>
+
+        <!-- Add default value for IS_ACTIVE -->
+        <addDefaultValue
+            tableName="FILTER_OPTION"
+            columnName="IS_ACTIVE"
+            defaultValueBoolean="true"/>
+
+        <!-- Add NOT NULL constraint to IS_ACTIVE -->
+        <addNotNullConstraint
+            tableName="FILTER_OPTION"
+            columnName="IS_ACTIVE"
+            columnDataType="bool"/>
+    </changeSet>
+
+    <changeSet id="4" author="Ivaylo Mitrev">
+        <comment>Add indexes for FILTER_OPTION table</comment>
+
+        <createIndex indexName="IDX_FILTER_OPTION_TYPE" tableName="FILTER_OPTION">
+            <column name="TYPE"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_FILTER_OPTION_PARENT" tableName="FILTER_OPTION">
+            <column name="PARENT_FILTER_OPTION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_FILTER_OPTION_IS_ACTIVE" tableName="FILTER_OPTION">
+            <column name="IS_ACTIVE"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

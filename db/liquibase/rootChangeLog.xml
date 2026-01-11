@@ -8,9 +8,26 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+    <!-- Base tables (existing) -->
     <include file="tables/organization.xml" relativeToChangelogFile="true" />
     <include file="tables/user.xml" relativeToChangelogFile="true" />
     <include file="tables/jobOffer.xml" relativeToChangelogFile="true" />
     <include file="tables/filterOption.xml" relativeToChangelogFile="true" />
+
+    <!-- New tables (must be in dependency order) -->
+    <!-- Organization Admin depends on: ORGANIZATION, USERS -->
+    <include file="tables/organizationAdmin.xml" relativeToChangelogFile="true" />
+
+    <!-- Documents depend on: USERS -->
+    <include file="tables/document.xml" relativeToChangelogFile="true" />
+
+    <!-- Job Application depends on: USERS, JOB_OFFER, DOCUMENT -->
+    <include file="tables/jobApplication.xml" relativeToChangelogFile="true" />
+
+    <!-- Saved Job Offer depends on: USERS, JOB_OFFER -->
+    <include file="tables/savedJobOffer.xml" relativeToChangelogFile="true" />
+
+    <!-- Chat depends on: JOB_APPLICATION, USERS -->
+    <include file="tables/chat.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

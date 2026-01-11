@@ -31,4 +31,48 @@
 
     </changeSet>
 
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <comment>Add NOT NULL constraints, fix data types, and add defaults for ORGANIZATION</comment>
+
+        <!-- Add NOT NULL constraint to NAME -->
+        <addNotNullConstraint
+            tableName="ORGANIZATION"
+            columnName="NAME"
+            columnDataType="varchar(256)"/>
+
+        <!-- Change YEAR_CREATED from varchar(5) to SMALLINT -->
+        <modifyDataType
+            tableName="ORGANIZATION"
+            columnName="YEAR_CREATED"
+            newDataType="SMALLINT"/>
+
+        <!-- Add default value for IS_ACTIVE -->
+        <addDefaultValue
+            tableName="ORGANIZATION"
+            columnName="IS_ACTIVE"
+            defaultValueBoolean="true"/>
+
+        <!-- Add NOT NULL constraint to IS_ACTIVE -->
+        <addNotNullConstraint
+            tableName="ORGANIZATION"
+            columnName="IS_ACTIVE"
+            columnDataType="bool"/>
+    </changeSet>
+
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add indexes for ORGANIZATION table</comment>
+
+        <createIndex indexName="IDX_ORGANIZATION_NAME" tableName="ORGANIZATION">
+            <column name="NAME"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_ORGANIZATION_SECTOR" tableName="ORGANIZATION">
+            <column name="SECTOR"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_ORGANIZATION_IS_ACTIVE" tableName="ORGANIZATION">
+            <column name="IS_ACTIVE"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

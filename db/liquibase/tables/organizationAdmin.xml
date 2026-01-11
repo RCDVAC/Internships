@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <comment>Create ORGANIZATION_ADMIN junction table for multi-role organization management</comment>
+        <createTable tableName="ORGANIZATION_ADMIN">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="ORGANIZATION_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Role: OWNER, EDITOR, VIEWER -->
+            <column name="ROLE" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADDED_BY_USER_ID" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DATE_ADDED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ACTIVE" type="bool" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for ORGANIZATION_ADMIN</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="ORGANIZATION_ADMIN"
+            baseColumnNames="ORGANIZATION_ID"
+            referencedTableName="ORGANIZATION"
+            referencedColumnNames="ID"
+            constraintName="FK_ORG_ADMIN_ORGANIZATION"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="ORGANIZATION_ADMIN"
+            baseColumnNames="USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_ORG_ADMIN_USER"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="ORGANIZATION_ADMIN"
+            baseColumnNames="ADDED_BY_USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_ORG_ADMIN_ADDED_BY"
+            onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add indexes and unique constraint for ORGANIZATION_ADMIN</comment>
+
+        <!-- Unique constraint: one user can have only one role per organization -->
+        <addUniqueConstraint
+            tableName="ORGANIZATION_ADMIN"
+            columnNames="ORGANIZATION_ID,USER_ID"
+            constraintName="UK_ORG_ADMIN_ORG_USER"/>
+
+        <createIndex indexName="IDX_ORG_ADMIN_ORGANIZATION" tableName="ORGANIZATION_ADMIN">
+            <column name="ORGANIZATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_ORG_ADMIN_USER" tableName="ORGANIZATION_ADMIN">
+            <column name="USER_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_ORG_ADMIN_ROLE" tableName="ORGANIZATION_ADMIN">
+            <column name="ROLE"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

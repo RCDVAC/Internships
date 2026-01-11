@@ -55,6 +55,7 @@ public class JobOffer {
     public JobOffer() {
         this.id = UUID.randomUUID();
         this.isActive = true;
+        this.visited = 0L;
         this.dateCreated = Timestamp.from(Instant.now());
         this.dateModified = Timestamp.from(Instant.now());
     }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <comment>Create SAVED_JOB_OFFER table for user bookmarks/favorites</comment>
+        <createTable tableName="SAVED_JOB_OFFER">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOB_OFFER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_SAVED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NOTES" type="varchar(512)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for SAVED_JOB_OFFER</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="SAVED_JOB_OFFER"
+            baseColumnNames="USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_SAVED_JOB_OFFER_USER"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="SAVED_JOB_OFFER"
+            baseColumnNames="JOB_OFFER_ID"
+            referencedTableName="JOB_OFFER"
+            referencedColumnNames="ID"
+            constraintName="FK_SAVED_JOB_OFFER_JOB"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add indexes and unique constraint for SAVED_JOB_OFFER</comment>
+
+        <!-- Unique constraint: user can save a job only once -->
+        <addUniqueConstraint
+            tableName="SAVED_JOB_OFFER"
+            columnNames="USER_ID,JOB_OFFER_ID"
+            constraintName="UK_SAVED_JOB_USER_JOB"/>
+
+        <createIndex indexName="IDX_SAVED_JOB_OFFER_USER" tableName="SAVED_JOB_OFFER">
+            <column name="USER_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_SAVED_JOB_OFFER_JOB" tableName="SAVED_JOB_OFFER">
+            <column name="JOB_OFFER_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_SAVED_JOB_OFFER_DATE" tableName="SAVED_JOB_OFFER">
+            <column name="DATE_SAVED"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!-- ==================== CONVERSATION ==================== -->
+
+    <changeSet id="1" author="Ivaylo Mitrev">
+        <comment>Create CONVERSATION table linked to job applications</comment>
+        <createTable tableName="CONVERSATION">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="APPLICATION_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="varchar(256)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="DATE_CREATED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_LAST_MESSAGE" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="IS_ACTIVE" type="bool" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Ivaylo Mitrev">
+        <comment>Add foreign key for CONVERSATION</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="CONVERSATION"
+            baseColumnNames="APPLICATION_ID"
+            referencedTableName="JOB_APPLICATION"
+            referencedColumnNames="ID"
+            constraintName="FK_CONVERSATION_APPLICATION"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="3" author="Ivaylo Mitrev">
+        <comment>Add indexes for CONVERSATION</comment>
+
+        <createIndex indexName="IDX_CONVERSATION_APPLICATION" tableName="CONVERSATION">
+            <column name="APPLICATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_CONVERSATION_DATE_LAST_MSG" tableName="CONVERSATION">
+            <column name="DATE_LAST_MESSAGE"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- ==================== CONVERSATION_PARTICIPANT ==================== -->
+
+    <changeSet id="4" author="Ivaylo Mitrev">
+        <comment>Create CONVERSATION_PARTICIPANT for tracking who is in each conversation</comment>
+        <createTable tableName="CONVERSATION_PARTICIPANT">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="CONVERSATION_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_JOINED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_LAST_READ" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="IS_TYPING" type="bool" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPING_UPDATED_AT" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="IS_ACTIVE" type="bool" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for CONVERSATION_PARTICIPANT</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="CONVERSATION_PARTICIPANT"
+            baseColumnNames="CONVERSATION_ID"
+            referencedTableName="CONVERSATION"
+            referencedColumnNames="ID"
+            constraintName="FK_CONV_PARTICIPANT_CONVERSATION"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="CONVERSATION_PARTICIPANT"
+            baseColumnNames="USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_CONV_PARTICIPANT_USER"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="6" author="Ivaylo Mitrev">
+        <comment>Add indexes and unique constraint for CONVERSATION_PARTICIPANT</comment>
+
+        <addUniqueConstraint
+            tableName="CONVERSATION_PARTICIPANT"
+            columnNames="CONVERSATION_ID,USER_ID"
+            constraintName="UK_CONV_PARTICIPANT_CONV_USER"/>
+
+        <createIndex indexName="IDX_CONV_PARTICIPANT_CONVERSATION" tableName="CONVERSATION_PARTICIPANT">
+            <column name="CONVERSATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_CONV_PARTICIPANT_USER" tableName="CONVERSATION_PARTICIPANT">
+            <column name="USER_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- ==================== MESSAGE ==================== -->
+
+    <changeSet id="7" author="Ivaylo Mitrev">
+        <comment>Create MESSAGE table for chat messages</comment>
+        <createTable tableName="MESSAGE">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="CONVERSATION_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SENDER_USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <!-- Message status: SENT, DELIVERED, READ -->
+            <column name="STATUS" type="varchar(32)" defaultValue="SENT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_SENT" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_EDITED" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="IS_DELETED" type="bool" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <!-- For reply threading -->
+            <column name="REPLY_TO_MESSAGE_ID" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="8" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for MESSAGE</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="MESSAGE"
+            baseColumnNames="CONVERSATION_ID"
+            referencedTableName="CONVERSATION"
+            referencedColumnNames="ID"
+            constraintName="FK_MESSAGE_CONVERSATION"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="MESSAGE"
+            baseColumnNames="SENDER_USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_MESSAGE_SENDER"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="MESSAGE"
+            baseColumnNames="REPLY_TO_MESSAGE_ID"
+            referencedTableName="MESSAGE"
+            referencedColumnNames="ID"
+            constraintName="FK_MESSAGE_REPLY_TO"
+            onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="9" author="Ivaylo Mitrev">
+        <comment>Add indexes for MESSAGE</comment>
+
+        <createIndex indexName="IDX_MESSAGE_CONVERSATION" tableName="MESSAGE">
+            <column name="CONVERSATION_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_MESSAGE_SENDER" tableName="MESSAGE">
+            <column name="SENDER_USER_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_MESSAGE_DATE_SENT" tableName="MESSAGE">
+            <column name="DATE_SENT"/>
+        </createIndex>
+
+        <!-- Composite index for fetching messages in conversation sorted by date -->
+        <createIndex indexName="IDX_MESSAGE_CONV_DATE" tableName="MESSAGE">
+            <column name="CONVERSATION_ID"/>
+            <column name="DATE_SENT"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- ==================== MESSAGE_ATTACHMENT ==================== -->
+
+    <changeSet id="10" author="Ivaylo Mitrev">
+        <comment>Create MESSAGE_ATTACHMENT table for file attachments in chat</comment>
+        <createTable tableName="MESSAGE_ATTACHMENT">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="MESSAGE_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_PATH" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_SIZE" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MIME_TYPE" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_UPLOADED" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="11" author="Ivaylo Mitrev">
+        <comment>Add foreign key for MESSAGE_ATTACHMENT</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="MESSAGE_ATTACHMENT"
+            baseColumnNames="MESSAGE_ID"
+            referencedTableName="MESSAGE"
+            referencedColumnNames="ID"
+            constraintName="FK_MSG_ATTACHMENT_MESSAGE"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="12" author="Ivaylo Mitrev">
+        <comment>Add index for MESSAGE_ATTACHMENT</comment>
+
+        <createIndex indexName="IDX_MSG_ATTACHMENT_MESSAGE" tableName="MESSAGE_ATTACHMENT">
+            <column name="MESSAGE_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- ==================== MESSAGE_READ_RECEIPT ==================== -->
+
+    <changeSet id="13" author="Ivaylo Mitrev">
+        <comment>Create MESSAGE_READ_RECEIPT for tracking individual read receipts</comment>
+        <createTable tableName="MESSAGE_READ_RECEIPT">
+            <column name="ID" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="MESSAGE_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATE_READ" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="14" author="Ivaylo Mitrev">
+        <comment>Add foreign keys for MESSAGE_READ_RECEIPT</comment>
+
+        <addForeignKeyConstraint
+            baseTableName="MESSAGE_READ_RECEIPT"
+            baseColumnNames="MESSAGE_ID"
+            referencedTableName="MESSAGE"
+            referencedColumnNames="ID"
+            constraintName="FK_MSG_READ_RECEIPT_MESSAGE"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="MESSAGE_READ_RECEIPT"
+            baseColumnNames="USER_ID"
+            referencedTableName="USERS"
+            referencedColumnNames="ID"
+            constraintName="FK_MSG_READ_RECEIPT_USER"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="15" author="Ivaylo Mitrev">
+        <comment>Add indexes and unique constraint for MESSAGE_READ_RECEIPT</comment>
+
+        <addUniqueConstraint
+            tableName="MESSAGE_READ_RECEIPT"
+            columnNames="MESSAGE_ID,USER_ID"
+            constraintName="UK_MSG_READ_RECEIPT_MSG_USER"/>
+
+        <createIndex indexName="IDX_MSG_READ_RECEIPT_MESSAGE" tableName="MESSAGE_READ_RECEIPT">
+            <column name="MESSAGE_ID"/>
+        </createIndex>
+
+        <createIndex indexName="IDX_MSG_READ_RECEIPT_USER" tableName="MESSAGE_READ_RECEIPT">
+            <column name="USER_ID"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

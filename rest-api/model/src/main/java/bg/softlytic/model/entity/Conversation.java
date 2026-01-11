@@ -1,6 +1,5 @@
 package bg.softlytic.model.entity;
 
-import bg.softlytic.model.enums.Sector;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,41 +14,44 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ORGANIZATION", schema = "JOBS_PROJECT")
+@Table(name = "CONVERSATION", schema = "JOBS_PROJECT")
 @Getter
 @Setter
 @ToString
-public class Organization {
+public class Conversation {
 
     @Id
     public UUID id;
-    @Column(name = "NAME")
-    public String name;
-    @Column(name = "EIK")
-    public String eik;
-    @Column(name = "ADDRESS")
-    public String address;
-    @Column(name = "DESCRIPTION")
-    public String description;
-    @Column(name = "SECTOR")
-    @Enumerated(EnumType.STRING)
-    public Sector sector;
-    @Column(name = "YEAR_CREATED")
-    public Short yearCreated;
-    @Column(name = "DATE_JOINED")
-    public Timestamp dateJoined;
-    @Column(name = "IS_ACTIVE")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APPLICATION_ID", nullable = false)
+    @ToString.Exclude
+    public JobApplication application;
+
+    @Column(name = "TITLE")
+    public String title;
+
+    @Column(name = "DATE_CREATED", nullable = false)
+    public Timestamp dateCreated;
+
+    @Column(name = "DATE_LAST_MESSAGE")
+    public Timestamp dateLastMessage;
+
+    @Column(name = "IS_ACTIVE", nullable = false)
     public Boolean isActive;
 
-
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
     @ToString.Exclude
-    public Set<JobOffer> jobsOffers = new HashSet<>();
+    public Set<ConversationParticipant> participants = new HashSet<>();
 
-    public Organization() {
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    public Set<Message> messages = new HashSet<>();
+
+    public Conversation() {
         this.id = UUID.randomUUID();
         this.isActive = true;
-        this.dateJoined = Timestamp.from(Instant.now());
+        this.dateCreated = Timestamp.from(Instant.now());
     }
 
     @Override
@@ -59,7 +61,7 @@ public class Organization {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Organization that = (Organization) o;
+        Conversation that = (Conversation) o;
         return this.id != null && Objects.equals(this.id, that.id);
     }
 
