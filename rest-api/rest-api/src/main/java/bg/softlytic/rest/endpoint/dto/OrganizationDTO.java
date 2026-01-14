@@ -16,7 +16,7 @@ public class OrganizationDTO {
     public String address;
     public String description;
     public Sector sector;
-    public String yearCreated;
+    public Short yearCreated;
     @JsonFormat(pattern = "dd-MM-yyyy")
     public LocalDate dateJoined;
     public Boolean isActive;
