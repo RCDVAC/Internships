@@ -400,21 +400,6 @@ public abstract class ApplicationMapper {
         return attachment;
     }
 
-    // ==================== MESSAGE READ RECEIPT MAPPINGS ====================
-
-    @Mapping(target = "id", expression = "java(receipt.getId().toString())")
-    @Mapping(target = "messageId", expression = "java(receipt.getMessage() != null ? receipt.getMessage().getId().toString() : null)")
-    @Mapping(target = "userId", expression = "java(receipt.getUser() != null ? receipt.getUser().getId().toString() : null)")
-    @Mapping(target = "dateRead", source = "dateRead", qualifiedByName = "timestampToLocalDateTime")
-    public abstract MessageReadReceiptDTO toDto(MessageReadReceipt receipt);
-
-    public MessageReadReceipt toEntity(MessageReadReceiptDTO dto, Message message, User user) {
-        MessageReadReceipt receipt = new MessageReadReceipt();
-        receipt.setMessage(message);
-        receipt.setUser(user);
-        return receipt;
-    }
-
     // ==================== FILTER OPTION MAPPINGS ====================
 
     @Mapping(target = "id", expression = "java(filterOption.getId().toString())")

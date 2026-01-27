@@ -24,4 +24,7 @@ dependencies {
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'io.quarkus:quarkus-test-vertx'
+    testImplementation 'io.quarkus:quarkus-junit5-mockito'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
 }

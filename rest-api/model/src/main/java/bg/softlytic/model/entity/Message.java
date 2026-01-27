@@ -59,10 +59,6 @@ public class Message {
     @ToString.Exclude
     public Set<MessageAttachment> attachments = new HashSet<>();
 
-    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    public Set<MessageReadReceipt> readReceipts = new HashSet<>();
-
     public Message() {
         this.id = UUID.randomUUID();
         this.status = MessageStatus.SENT;

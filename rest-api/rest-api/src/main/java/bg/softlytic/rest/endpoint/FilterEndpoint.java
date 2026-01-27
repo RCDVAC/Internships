@@ -1,7 +1,10 @@
 package bg.softlytic.rest.endpoint;
 
+import bg.softlytic.rest.endpoint.dto.ApplicationMapper;
 import bg.softlytic.rest.endpoint.dto.FilterOptionDto;
+import bg.softlytic.rest.repository.FilterOptionRepository;
 import bg.softlytic.rest.service.filter.FilterService;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -26,12 +29,22 @@ public class FilterEndpoint {
     @Inject
     FilterService filterService;
 
+    @Inject
+    FilterOptionRepository filterOptionRepository;
+
+    @Inject
+    ApplicationMapper applicationMapper;
+
     @GET
+    @WithTransaction
     @Operation(summary = "Get all filter options", description = "Retrieves all available filter options for job search")
     @APIResponse(responseCode = "200", description = "List of filter options",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = FilterOptionDto.class)))
     public Uni<List<FilterOptionDto>> findAll() {
-        return Uni.createFrom().item(null);
+        return filterOptionRepository.listAll()
+                .map(filterOptions -> filterOptions.stream()
+                        .map(applicationMapper::toDto)
+                        .toList());
     }
 
 }
