@@ -35,7 +35,7 @@ type Faq = { q: string; a: string; open: boolean };
             <div class="icon">📍</div>
             <div class="ct">Office</div>
             <div class="muted">Visit us in person</div>
-            <div class="strong">123 Career Street, San Francisco, CA 94102</div>
+            <div class="strong">Bulgaria Boulevard, Sofia, Bulgaria</div>
           </div>
         </div>
 
