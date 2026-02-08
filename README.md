@@ -24,17 +24,6 @@ A modern, responsive platform connecting young professionals with top Bulgarian 
 - **Talent Pool Access**: Connect with qualified Bulgarian students
 - **Application Management**: Streamlined application review process
 
-## 🚀 Technology Stack
-
-- **Frontend**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS with custom design system
-- **Icons**: Lucide React
-- **Animations**: Framer Motion
-- **Forms**: React Hook Form
-- **Date Handling**: date-fns
-- **UI Components**: Headless UI
-
 ## 🎨 Design Features
 
 - **Modern Bulgarian Theme**: Custom color palette inspired by the Bulgarian flag
